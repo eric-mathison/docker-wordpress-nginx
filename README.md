@@ -20,7 +20,7 @@ services:
     restart: always
   
   wordpress:
-    image: wordpress-php:latest
+    image: ericmathison/wordpress-php:latest
     container_name: wordpress
     depends_on:
       - db
@@ -38,7 +38,7 @@ services:
     restart: always
 
   nginx:
-    image: wordpress-nginx:latest
+    image: ericmathison/wordpress-nginx:latest
     container_name: nginx
     ports:
       - '80:80'
