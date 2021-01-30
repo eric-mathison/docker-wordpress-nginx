@@ -62,7 +62,7 @@ server {
 
     index index.php;
 
-    include global/basic.conf;
+    include global/nocache.conf;
     include global/secure.conf;
     include global/locations.conf;
     include global/proxy.conf;

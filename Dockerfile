@@ -1,14 +1,15 @@
-FROM nginx:latest
-COPY default.conf /etc/nginx/conf.d/default.conf
-COPY basic.conf /etc/nginx/global/basic.conf
-COPY secure.conf /etc/nginx/global/secure.conf
-COPY locations.conf /etc/nginx/global/locations.conf
-COPY proxy.conf /etc/nginx/global/proxy.conf
-COPY docker-entrypoint.sh /usr/local/bin/
+FROM nginx:1.19
 
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/global
+
+COPY templates/default.conf.template /etc/nginx/conf.d/default.conf
+COPY templates/nocache.conf.template /etc/nginx/templates/
+COPY templates/secure.conf.template /etc/nginx/templates/
+COPY templates/locations.conf.template /etc/nginx/templates/
+COPY templates/proxy.conf.template /etc/nginx/templates/
+COPY fastcgi-permissions.sh /docker-entrypoint.d
+
+RUN mkdir /etc/nginx/global
+RUN chmod +x /docker-entrypoint.d/fastcgi-permissions.sh
 
 RUN sed -i 's/user  nginx/user  www-data/' /etc/nginx/nginx.conf
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
