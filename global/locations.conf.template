@@ -58,7 +58,7 @@ location ~* ^.+\.(eot|otf|woff|woff2|ttf|zip|tgz|rar|bz2|doc|xls|exe|ppt|tar|mid
 }
 
 # Media: images, icons, video, audio send expires headers.
-location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|mp4|ogg|ogv|webm|htc)$ {
+location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|mp4|ogg|ogv|webm|webp|htc)$ {
   expires 1y;
   access_log off;
 }
