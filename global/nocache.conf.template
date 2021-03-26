@@ -5,15 +5,25 @@ set $skip_cache 0;
 
 # POST requests and urls with a query string should always go to PHP
 if ($request_method = POST) {
-set $skip_cache 1;
+    set $skip_cache 1;
 }
 
 if ($query_string != "") {
-set $skip_cache 1;
+    set $skip_cache 1;
 }
 
-# Don't cache uris containing the following segments
-if ($request_uri ~* "opcache.php|/status/|/wp-admin/|/wp-login.php|/wp-content/uploads/dlm_uploads/|/xmlrpc.php|.*.log|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml|/shop.*|/cart.*|/my-account.*|/checkout.*|/affiliate-.*") {
+# Don't cache on common Wordpress URLs
+if ($request_uri ~* "opcache.php|/status/|/wp-admin/|/wp-login.php|/xmlrpc.php|.*.log|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
+    set $skip_cache 1;
+}
+
+# Don't cache on WooCommerce URLs
+if ($request_uri ~* "/cart.*|/my-account.*|/checkout.*") {
+    set $skip_cache 1;
+}
+
+# For Legacy Products
+if ($request_uri ~* "/virtual-preschool.*|/login.*|/password-lost.*|/register.*") {
     set $skip_cache 1;
 }
 
