@@ -14,6 +14,6 @@ RUN mkdir /etc/nginx/global
 RUN chmod +x /docker-entrypoint.d/permission_check.sh
 
 RUN sed -i 's/user  nginx/user  www-data/' /etc/nginx/nginx.conf
-RUN sed -i 's/worker_processes  1;/worker_processes  auto;\nworker_rlimit_nofile 4096;/' /etc/nginx/nginx.conf
-RUN sed -i 's/worker_connections  1024;/worker_connections  2048;\nuse epoll;/' /etc/nginx/nginx.conf
+RUN sed -i 's/worker_processes  1;/worker_processes  auto;\nworker_rlimit_nofile 64000;/' /etc/nginx/nginx.conf
+RUN sed -i 's/worker_connections  1024;/worker_connections  8192;\nuse epoll;/' /etc/nginx/nginx.conf
 RUN sed -i 's/keepalive_timeout  65;/#keepalive_timeout  65;/' /etc/nginx/nginx.conf
