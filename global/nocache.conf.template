@@ -6,28 +6,34 @@ set $skip_cache 0;
 # POST requests and urls with a query string should always go to PHP
 if ($request_method = POST) {
     set $skip_cache 1;
+    set $skip_reason "POST";
 }
 
 if ($query_string != "") {
     set $skip_cache 1;
+    set $skip_reason "Query String";
 }
 
 # Don't cache on common Wordpress URLs
 if ($request_uri ~* "opcache.php|/status/|/wp-admin/|/wp-login.php|/xmlrpc.php|.*.log|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
     set $skip_cache 1;
+    set $skip_reason "URL";
 }
 
 # Don't cache on WooCommerce URLs
 if ($request_uri ~* "/cart.*|/my-account.*|/checkout.*") {
     set $skip_cache 1;
+    set $skip_reason "WooCommerce URL";
 }
 
 # For Legacy Products
 if ($request_uri ~* "/virtual-preschool.*|/login.*|/password-lost.*|/register.*") {
     set $skip_cache 1;
+    set $skip_reason "Legacy URL";
 }
 
 # Don't use the cache for logged in users or recent commenter
 if ($http_cookie ~* "comment_author|wp-postpass|wordpress_no_cache|wordpress_admin_logged_in") {
     set $skip_cache 1;
+    set $skip_reason "Cookie";
 }
