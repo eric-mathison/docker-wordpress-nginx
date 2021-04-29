@@ -2,6 +2,7 @@
 # Caching
 ###
 set $skip_cache 0;
+set $skip_reason 0;
 
 # POST requests and urls with a query string should always go to PHP
 if ($request_method = POST) {
