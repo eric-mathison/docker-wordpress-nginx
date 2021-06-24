@@ -117,6 +117,7 @@ location ~ [^/]\.php(/|$) {
   fastcgi_pass ${FASTCGI_HOST}:9000;
   fastcgi_pass_header Set-Cookie;
   fastcgi_pass_header Cookie;
+  fastcgi_read_timeout 600;
 }
 
 # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
