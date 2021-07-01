@@ -113,7 +113,7 @@ location ~ [^/]\.php(/|$) {
   fastcgi_no_cache $skip_cache;
   fastcgi_cache fastcgicache;
   fastcgi_cache_valid 60m;
-  fastcgi_cache_valid 200 301 302 404 1m;
+  fastcgi_cache_valid 200 301 302 404 60m;
   fastcgi_pass ${FASTCGI_HOST}:9000;
   fastcgi_pass_header Set-Cookie;
   fastcgi_pass_header Cookie;
