@@ -4,7 +4,45 @@
 
 This is a Nginx Docker Image designed to work with this [Wordpress PHP Docker Image](https://github.com/eric-mathison/docker-wordpress-php). This image includes common routes for Wordpress and configuration for Nginx FastCGI cache.
 
-## Defaults
+## How to Use this Image
+
+### Start a `nginx` server instance
+
+```bash
+docker run -p 80:80 --name nginx -e FASTCGI_HOST=localhost -d ericmathison/nginx:tag
+```
+
+Once the container has started, you can browse or curl http://localhost:80.
+
+### Using Docker Compose
+
+Example docker-compose.yml file:
+
+```yaml
+version: "3.3"
+
+services:
+    nginx:
+        image: ericmathison/nginx:latest
+        restart: always
+        volumes:
+            - wp-data:/var/www/html
+            - nginxfastcgi:/var/cache/nginxfastcgi
+        environment:
+            FASTCGI_HOST: localhost
+```
+
+### Environment Variables
+
+When you use this image, you will need to supply the address for your FastCGI host. This can be specified by either `IP Address` or `DNS Name`.
+
+**`FASTCGI_HOST`**
+
+Set this to either the `IP Address` or `DNS Name` of the container running your PHP application. The port defaults at `9000`.
+
+## Configuration
+
+### Defaults
 
 This image sets the `worker_processes` to `auto` and `worker_connections` to `8192`. These directives are set in the `Dockerfile`.
 
@@ -17,13 +55,11 @@ Virtual Server block directives are configured in the files located in the `/glo
 -   `/global/proxy.conf.template` RealIP Rules
 -   `/global/secure.conf.template` Basic Security Rules
 
-## Caching
+### Caching
 
 The caching directory is located in `/var/cache/nginxfastcgi/`.  
 By default, inactive cache is set to purge after `90 minutes`. Resources served with a `200, 301, 302, or 404` response are cached for `60 minutes`. Nginx is allowed to serve stale cache, in case of server problems.
 
-> ### Cache Skipping
->
 > FastCGI cache is skipped whenever one of the following situations is true:
 >
 > -   it's a POST request
@@ -32,11 +68,11 @@ By default, inactive cache is set to purge after `90 minutes`. Resources served 
 > -   the request is for a WooCommerce URL (/cart, /my-account, /checkout)
 > -   the request includes specific cookies
 
-## Proxying
+### Proxying
 
 If you are using this Nginx image behind a reverse proxy like Cloudflare or a Docker Load Balancer, you can add the IP address(es) of the load balancer to the `/global/proxy.conf.template` file.
 
-## GH Actions
+### GH Actions
 
 This repo is configured to automatically build this Docker image and upload it to your Docker Hub account.
 
