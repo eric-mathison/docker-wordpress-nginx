@@ -1,5 +1,7 @@
 # Nginx Docker Image with FastCGI
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/eric-mathison/docker-wordpress-nginx/Build%20Docker%20Image%20and%20Push?style=for-the-badge)
+
 This is a Nginx Docker Image designed to work with this [Wordpress PHP Docker Image](https://github.com/eric-mathison/docker-wordpress-php). This image includes common routes for Wordpress and configuration for Nginx FastCGI cache.
 
 ## Defaults
