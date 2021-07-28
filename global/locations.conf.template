@@ -1,3 +1,53 @@
+# Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
+# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+location ^~ /\. {
+  add_header x-loc block-hidden;
+  deny all;
+}
+
+# Deny access to any files with a .php extension in the uploads directory
+# Works in sub-directory installs and also in multisite network
+# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+location ^~ /(?:uploads|files)/.*\.php$ {
+  add_header x-loc block-uploads-php;
+  deny all;
+}
+
+# These rules was taken from: https://jesus.perezpaz.es/874/wordpress-nginx-configuration/ and
+# pretend to avoid to hacking tools to get information about Wordpress installation
+#
+#    Common deny or internal locations, to help prevent access to areas of
+#    the site that should not be public
+location ~* wp-admin/includes { add_header x-loc block-includes; deny all; }
+location ~* wp-includes/theme-compat/ { add_header x-loc block-includes-theme-compat; deny all; }
+location ~* wp-includes/js/tinymce/langs/.*\.php { add_header x-loc block-includes-tinymce; deny all; }
+location /wp-content/ { add_header x-loc internal-wpcontent; internal; }
+location /wp-includes/ { add_header x-loc internal-includes; internal; }
+
+#    Protects the wp-config.php|readme.html|license.txt files from being
+#    accessed (uncomment after wordpress installation)
+location ~* /(\.|wp-config.php|readme.html|license.txt) { 
+  add_header x-loc block-config; 
+  deny all; 
+}
+
+#    Prevent access to any files starting with a $ (usually temp files)
+location ~* ~$ { access_log off; log_not_found off; add_header x-loc block-temp; deny all; }
+
+# Prevent access to protected Woocommerce and Download files
+location ^~ /wp-content/uploads/woocommerce_uploads/ {
+    if ( $upstream_http_x_accel_redirect = "" ) {
+        return 403;
+    }
+    add_header x-loc internal-woo-uploads;
+    internal;
+}
+
+location ^~ /wp-content/uploads/dlm_uploads/ {
+  add_header x-loc internal-dlm-uploads;
+  internal;
+}
+
 # Default rules
 rewrite podcast-download/([^/]+)/([^/]*)/? /index.php?podcast_episode=$1 break;
 rewrite podcast-player/([^/]+)/([^/]*)/? /index.php?podcast_episode=$1&podcast_ref=player break;
@@ -131,51 +181,4 @@ location ~ [^/]\.php(/|$) {
   fastcgi_pass_header Set-Cookie;
   fastcgi_pass_header Cookie;
   fastcgi_read_timeout 600;
-}
-
-# Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
-# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-location ^~ /\. {
-  add_header x-loc block-hidden;
-  deny all;
-}
-
-# Deny access to any files with a .php extension in the uploads directory
-# Works in sub-directory installs and also in multisite network
-# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-location ^~ /(?:uploads|files)/.*\.php$ {
-  add_header x-loc block-uploads-php;
-  deny all;
-}
-
-# These rules was taken from: https://jesus.perezpaz.es/874/wordpress-nginx-configuration/ and
-# pretend to avoid to hacking tools to get information about Wordpress installation
-#
-#    Common deny or internal locations, to help prevent access to areas of
-#    the site that should not be public
-location ~* wp-admin/includes { add_header x-loc block-includes; deny all; }
-location ~* wp-includes/theme-compat/ { add_header x-loc block-includes-theme-compat; deny all; }
-location ~* wp-includes/js/tinymce/langs/.*\.php { add_header x-loc block-includes-tinymce; deny all; }
-location /wp-content/ { add_header x-loc internal-wpcontent; internal; }
-location /wp-includes/ { add_header x-loc internal-includes; internal; }
-
-#    Protects the wp-config.php|readme.html|license.txt files from being
-#    accessed (uncomment after wordpress installation)
-location ^~ /(\.|wp-config.php|readme.html|license.txt) { add_header x-loc block-config; deny all; }
-
-#    Prevent access to any files starting with a $ (usually temp files)
-location ~* ~$ { access_log off; log_not_found off; add_header x-loc block-temp; deny all; }
-
-# Prevent access to protected Woocommerce and Download files
-location ^~ /wp-content/uploads/woocommerce_uploads/ {
-    if ( $upstream_http_x_accel_redirect = "" ) {
-        return 403;
-    }
-    add_header x-loc internal-woo-uploads;
-    internal;
-}
-
-location ^~ /wp-content/uploads/dlm_uploads/ {
-  add_header x-loc internal-dlm-uploads;
-  internal;
 }
