@@ -135,7 +135,7 @@ location ~ [^/]\.php(/|$) {
 
 # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
 # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-location ~ /\. {
+location ^~ /\. {
   add_header x-loc block-hidden;
   deny all;
 }
@@ -143,7 +143,7 @@ location ~ /\. {
 # Deny access to any files with a .php extension in the uploads directory
 # Works in sub-directory installs and also in multisite network
 # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-location ~* /(?:uploads|files)/.*\.php$ {
+location ^~ /(?:uploads|files)/.*\.php$ {
   add_header x-loc block-uploads-php;
   deny all;
 }
@@ -161,7 +161,7 @@ location /wp-includes/ { add_header x-loc internal-includes; internal; }
 
 #    Protects the wp-config.php|readme.html|license.txt files from being
 #    accessed (uncomment after wordpress installation)
-location ~* /(\.|wp-config.php|readme.html|license.txt) { add_header x-loc block-config; deny all; }
+location ^~ /(\.|wp-config.php|readme.html|license.txt) { add_header x-loc block-config; deny all; }
 
 #    Prevent access to any files starting with a $ (usually temp files)
 location ~* ~$ { access_log off; log_not_found off; add_header x-loc block-temp; deny all; }
