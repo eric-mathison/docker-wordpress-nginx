@@ -152,8 +152,11 @@ location ~ /(\.|wp-config.php|readme.html|license.txt) { deny all; }
 location ~ ~$ { access_log off; log_not_found off; deny all; }
 
 # Prevent access to protected Woocommerce and Download files
-location ~* /wp-content/uploads/woocommerce_uploads/ {
-  internal;
+location /wp-content/uploads/woocommerce_uploads/ {
+    if ( $upstream_http_x_accel_redirect = "" ) {
+        return 403;
+    }
+    internal;
 }
 
 location ~* /wp-content/uploads/dlm_uploads/ {
