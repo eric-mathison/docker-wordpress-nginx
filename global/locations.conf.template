@@ -167,7 +167,7 @@ location ~* /(\.|wp-config.php|readme.html|license.txt) { add_header x-loc block
 location ~* ~$ { access_log off; log_not_found off; add_header x-loc block-temp; deny all; }
 
 # Prevent access to protected Woocommerce and Download files
-location ~* /wp-content/uploads/woocommerce_uploads/ {
+location ^~ /wp-content/uploads/woocommerce_uploads/ {
     if ( $upstream_http_x_accel_redirect = "" ) {
         return 403;
     }
@@ -175,7 +175,7 @@ location ~* /wp-content/uploads/woocommerce_uploads/ {
     internal;
 }
 
-location ~* /wp-content/uploads/dlm_uploads/ {
+location ^~ /wp-content/uploads/dlm_uploads/ {
   add_header x-loc internal-dlm-uploads;
   internal;
 }
