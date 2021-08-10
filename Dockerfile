@@ -3,9 +3,10 @@ FROM nginx:1.19
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/global
 
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
+COPY conf/7g-firewall.conf /etc/nginx/conf.d/7g-firewall.conf
 COPY global/locations.conf.template /etc/nginx/templates/
 COPY global/nocache.conf.template /etc/nginx/templates/
-COPY global/secure.conf.template /etc/nginx/templates/
+COPY global/7g.conf.template /etc/nginx/templates/
 COPY global/proxy.conf.template /etc/nginx/templates/
 
 COPY permission_check.sh /docker-entrypoint.d
