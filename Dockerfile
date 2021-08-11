@@ -18,3 +18,4 @@ RUN sed -i 's/user  nginx/user  www-data/' /etc/nginx/nginx.conf
 RUN sed -i 's/worker_processes  1;/worker_processes  auto;\nworker_rlimit_nofile 64000;/' /etc/nginx/nginx.conf
 RUN sed -i 's/worker_connections  1024;/worker_connections  8192;\nuse epoll;/' /etc/nginx/nginx.conf
 RUN sed -i 's/keepalive_timeout  65;/#keepalive_timeout  65;/' /etc/nginx/nginx.conf
+RUN sed -i 's/access_log  /var/log/nginx/access.log  main;/#access_log  /var/log/nginx/access.log  main;/' /etc/nginx/nginx.conf
