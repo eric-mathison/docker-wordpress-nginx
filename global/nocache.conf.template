@@ -21,6 +21,12 @@ if ($request_uri ~* "opcache.php|/status/|/wp-admin/|/wp-login.php|/xmlrpc.php|.
     set $skip_reason "${skip_reason}-URL";
 }
 
+# Don't cache Memberpress Pages
+if ($request_uri ~* "/register.*|/login.*|/account.*|/mepr*|/thank-you.*|/unauthorized.*") {
+    set $skip_cache 1;
+    set $skip_reason "${skip_reason}-MemberpressURL";
+}
+
 # Don't cache on WooCommerce URLs
 if ($request_uri ~* "/cart.*|/my-account.*|/checkout.*") {
     set $skip_cache 1;
