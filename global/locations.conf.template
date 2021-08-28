@@ -1,7 +1,6 @@
 # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
 # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
 location ^~ /\. {
-  add_header x-loc block-hidden;
   deny all;
 }
 
@@ -9,7 +8,6 @@ location ^~ /\. {
 # Works in sub-directory installs and also in multisite network
 # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
 location ^~ /(?:uploads|files)/.*\.php$ {
-  add_header x-loc block-uploads-php;
   deny all;
 }
 
@@ -18,33 +16,30 @@ location ^~ /(?:uploads|files)/.*\.php$ {
 #
 #    Common deny or internal locations, to help prevent access to areas of
 #    the site that should not be public
-location ~* wp-admin/includes { add_header x-loc block-includes; deny all; }
-location ~* wp-includes/theme-compat/ { add_header x-loc block-includes-theme-compat; deny all; }
-location ~* wp-includes/js/tinymce/langs/.*\.php { add_header x-loc block-includes-tinymce; deny all; }
-location /wp-content/ { add_header x-loc internal-wpcontent; internal; }
-location /wp-includes/ { add_header x-loc internal-includes; internal; }
+location ~* wp-admin/includes { deny all; }
+location ~* wp-includes/theme-compat/ { deny all; }
+location ~* wp-includes/js/tinymce/langs/.*\.php { deny all; }
+location /wp-content/ { internal; }
+location /wp-includes/ { internal; }
 
 #    Protects the wp-config.php|readme.html|license.txt files from being
 #    accessed (uncomment after wordpress installation)
 location ~* /(\.|wp-config.php|readme.html|license.txt) { 
-  add_header x-loc block-config; 
   deny all; 
 }
 
 #    Prevent access to any files starting with a $ (usually temp files)
-location ~* ~$ { access_log off; log_not_found off; add_header x-loc block-temp; deny all; }
+location ~* ~$ { access_log off; log_not_found off; deny all; }
 
 # Prevent access to protected Woocommerce and Download files
 location ^~ /wp-content/uploads/woocommerce_uploads/ {
     if ( $upstream_http_x_accel_redirect = "" ) {
         return 403;
     }
-    add_header x-loc internal-woo-uploads;
     internal;
 }
 
 location ^~ /wp-content/uploads/dlm_uploads/ {
-  add_header x-loc internal-dlm-uploads;
   internal;
 }
 
@@ -60,13 +55,11 @@ location / {
 
 location = /favicon.ico {
   access_log off;
-  add_header x-loc favicon;
 }
 
 location = /robots.txt {
   allow all;
   access_log off;
-  add_header x-loc robots;
   try_files $uri /index.php?$args;
 }
 
@@ -76,7 +69,6 @@ location = /status {
   allow 10.0.0.0/8;
   allow 172.16.0.0/20;
   allow 192.168.0.0/16;
-  add_header x-loc status;
   deny all;
   include fastcgi_params;
   fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -89,7 +81,6 @@ location = /ping {
   allow 10.0.0.0/8;
   allow 172.16.0.0/20;
   allow 192.168.0.0/16;
-  add_header x-loc ping;
   deny all;
   include fastcgi_params;
   fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -101,7 +92,6 @@ location /nginx_status {
   allow 10.0.0.0/8;
   allow 172.16.0.0/20;
   allow 192.168.0.0/16;
-  add_header x-loc nginxstatus;
   deny all;
   stub_status;
   access_log off;
@@ -111,14 +101,12 @@ location /nginx_status {
 location ~* \.(eot|otf|woff|woff2|ttf|zip|tgz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
   expires 1y;
   access_log off;
-  add_header x-loc files;
 }
 
 # Media: images, icons, video, audio send expires headers.
 location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|mp3|mp4|ogg|ogv|webm|webp|htc|pdf)$ {
   expires 1y;
   access_log off;
-  add_header x-loc media;
 }
 
 # Cache svgz files, but don't compress them.
@@ -126,21 +114,18 @@ location ~* \.svgz$ {
 	expires 1y;
 	access_log off;
 	gzip off;
-  add_header x-loc svgz;
 }
 
 # CSS and Javascript send expires headers.
 location ~* \.(?:css|js)$ {
   expires 1y;
   access_log off;
-  add_header x-loc cssjs;
 }
 
 # HTML send expires headers.
 location ~* \.(html)$ {
   expires 7d;
   access_log off;
-  add_header x-loc html;
 }
 
 # Browser caching of rss
@@ -148,13 +133,11 @@ location ~* \.(?:rss|atom)$ {
   expires 1h;
   access_log off;
   log_not_found off;
-  add_header x-loc rss;
 }
 
 # Allow Well-Known for lets-encrypt certbot
 location ~ /.well-known {
   allow all;
-  add_header x-loc letsen;
 }
 
 # Pass all .php files onto a php-fpm/php-fcgi server.
@@ -168,7 +151,6 @@ location ~ [^/]\.php(/|$) {
   # Mitigate https://httpoxy.org/ vulnerabilities
   fastcgi_param HTTP_PROXY "";
 
-  add_header x-loc php;
   include fastcgi_params;
   fastcgi_index index.php;
   fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
