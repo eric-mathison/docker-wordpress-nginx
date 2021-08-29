@@ -1,8 +1,6 @@
 ###
 # Caching
 ###
-set $skip_cache 0;
-set $skip_reason "";
 
 # POST requests and urls with a query string should always go to PHP
 if ($request_method = POST) {
@@ -19,12 +17,6 @@ if ($query_string != "") {
 if ($request_uri ~* "opcache.php|/status/|/wp-admin/|/wp-login.php|/xmlrpc.php|.*.log|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
     set $skip_cache 1;
     set $skip_reason "${skip_reason}-URL";
-}
-
-# Don't cache Memberpress Pages
-if ($request_uri ~* "/register.*|/login.*|/account.*|/mepr*|/thank-you.*|/unauthorized.*") {
-    set $skip_cache 1;
-    set $skip_reason "${skip_reason}-MemberpressURL";
 }
 
 # Don't cache on WooCommerce URLs

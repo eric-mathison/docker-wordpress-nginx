@@ -68,6 +68,14 @@ By default, inactive cache is set to purge after `90 minutes`. Resources served 
 > -   the request is for a WooCommerce URL (/cart, /my-account, /checkout)
 > -   the request includes specific cookies
 
+#### Custom Caching Rules
+
+If you need to add custom `no cache` rules, they can be added in a custom `.conf` file located in the `/etc/nginx/globals/` directory.  
+Use the following variables in your ruleset:
+
+-   `$skip_custom_cache`
+-   `$custom_skip_reason`
+
 ### Proxying
 
 If you are using this Nginx image behind a reverse proxy like Cloudflare or a Docker Load Balancer, you can add the IP address(es) of the load balancer to the `/global/proxy.conf.template` file.
