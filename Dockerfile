@@ -11,7 +11,7 @@ COPY global/nocache.conf.template /etc/nginx/templates/
 COPY global/7g.conf.template /etc/nginx/templates/
 COPY global/proxy.conf.template /etc/nginx/templates/
 
-COPY .goaccessrc /root/
+COPY goaccess.conf /etc/goaccess/
 
 COPY permission_check.sh /docker-entrypoint.d
 
