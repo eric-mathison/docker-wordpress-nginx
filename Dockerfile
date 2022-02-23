@@ -1,5 +1,7 @@
 FROM nginx:1.19
 
+RUN apt update && apt install -y goaccess && rm -rf /var/lib/apt/lists/*
+
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/global
 
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
