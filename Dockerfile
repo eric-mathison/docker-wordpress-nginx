@@ -1,7 +1,5 @@
 FROM nginx:1.19
 
-RUN apt update && apt install -y goaccess && rm -rf /var/lib/apt/lists/*
-
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/global
 
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
@@ -10,8 +8,6 @@ COPY global/locations.conf.template /etc/nginx/templates/
 COPY global/nocache.conf.template /etc/nginx/templates/
 COPY global/7g.conf.template /etc/nginx/templates/
 COPY global/proxy.conf.template /etc/nginx/templates/
-
-COPY goaccess.conf /etc/goaccess/
 
 COPY permission_check.sh /docker-entrypoint.d
 
