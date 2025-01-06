@@ -54,7 +54,9 @@ location / {
 }
 
 location = /favicon.ico {
+  allow all;
   access_log off;
+  try_files $uri /index.php?$args;
 }
 
 location = /robots.txt {
